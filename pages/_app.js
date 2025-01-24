@@ -1,16 +1,23 @@
+import React from "react";
+import ProtectRoute from "../components/ProtectRoute";
+import Sidebar from "../components/Sidebar";
 import "../styles/globals.css";
-import { useRouter } from "next/router";
 
-function MyApp({ Component, pageProps }) {
-  const router = useRouter();
-  const isLoginPage = router.pathname === "/";
+function MyApp({ Component, pageProps, router }) {
+  const isProtectedRoute = !["/login"].includes(router.pathname);
 
   return (
     <div style={{ display: "flex" }}>
-      {!isLoginPage} {/* Show Sidebar if not on the login page */}
-      <main style={{ flex: 1, padding: "20px" }}>
-        <Component {...pageProps} />
-      </main>
+      {isProtectedRoute && <Sidebar />}
+      <div style={{ flex: 1 }}>
+        {isProtectedRoute ? (
+          <ProtectRoute>
+            <Component {...pageProps} />
+          </ProtectRoute>
+        ) : (
+          <Component {...pageProps} />
+        )}
+      </div>
     </div>
   );
 }
